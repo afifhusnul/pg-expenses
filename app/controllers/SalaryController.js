@@ -38,7 +38,7 @@ router.get('/:id', auth, (req, res, next) => {
 
 
 /* POST New data */
-router.post('/', (req,res,next) => {
+router.post('/', auth, (req,res,next) => {
 
     try {
       
@@ -62,7 +62,7 @@ router.post('/', (req,res,next) => {
           )          
       }
     } catch(e) {    
-      res.status(500).json(config.rest.createResponse(500, false, undefined, e))
+      res.status(500).json(config.rest.createResponse(500, false, undefined, "Invalid format input"))
     }
   // }
 
@@ -85,12 +85,12 @@ router.put('/:id', auth, (req,res,next) => {
         ) 
     } catch(e) {
       // statements
-      console.log(e);
+      res.status(500).json(config.rest.createResponse(500, false, undefined, "Invalid format input"))
     }
 })
 
 /* DELETE data salary */
-router.delete('/:id', (req,res,next) => {
+router.delete('/:id', auth, (req,res,next) => {
   const id = req.params.id
   queries.delete(req.params.id)
     .then(data => {

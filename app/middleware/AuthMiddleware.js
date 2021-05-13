@@ -11,11 +11,11 @@ module.exports = (req, res, next) => {
     const userId = decodedToken.userId;
     if (req.body.userId && req.body.userId !== userId) {
       //throw 'Invalid user ID';
-      res.status(400).json(config.rest.createResponse(400, false, undefined, 'Unauthorized Access!'))
+      res.status(401).json(config.rest.createResponse(401, false, undefined, 'Unauthorized Access!'))
     } else {
       next()
     }
   } catch {
-    res.status(400).json(config.rest.createResponse(400, false, undefined, 'Unauthorized Access!'))
+    res.status(401).json(config.rest.createResponse(401, false, undefined, 'Unauthorized Access!'))
   }
 };

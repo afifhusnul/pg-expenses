@@ -6,7 +6,7 @@ const
   config = require('../utils/Setting'),  
   queries = require('../models/Expenses-db'),
   auth = require('../middleware/AuthMiddleware'),
-  validateSalaryInput = require('../validation/Salary')  
+  validateExpensesInput = require('../validation/Expenses')  
 
 
 /* GET all data */
@@ -40,25 +40,31 @@ router.get('/:id', auth, (req, res, next) => {
 /* POST New data */
 router.post('/', auth, (req,res,next) => {
 
-  try {
-    const { user_id,dt_salary,desc_salary,amt_salary } = req.body
-    queries.create({user_id,dt_salary,desc_salary,amt_salary})
-      .then(data => {
-        if (data) {
-          res.json(config.rest.createResponse(200, true, data));
-        } else {
-          res.status(400).json(config.rest.createResponse(400, false, undefined, err))
-        }
+    try {
+      
+      const {errors, isValid} = validateExpensesInput(req.body)
+      const { user_id,salary_id,dt_exp,desc_exp,amt_exp } = req.body
 
-      }).catch(err =>        
-        res.status(500).json(config.rest.createResponse(500, false, undefined, err.detail))
-        // console.log(err)
-      )          
+      if (!isValid) {
+          return res.status(400).json(config.rest.createResponse(400, false, undefined, errors))
+      } else {
+        // Save data
+        queries.create({user_id,salary_id,dt_exp,desc_exp,amt_exp})
+          .then(data => {
+            if (data) {
+              res.json(config.rest.createResponse(200, true, data));
+            } else {
+              res.status(400).json(config.rest.createResponse(400, false, undefined, err))
+            }
 
-  } catch(e) {
-    // statements
-    console.log(e);
-  }
+          }).catch(err =>        
+            res.status(500).json(config.rest.createResponse(500, false, undefined, err.detail))            
+          )
+      }
+    } catch(e) {    
+      res.status(500).json(config.rest.createResponse(500, false, undefined, "Invalid format input"))
+      // console.log(e)
+    }  
 
 })
 
@@ -66,8 +72,8 @@ router.post('/', auth, (req,res,next) => {
 router.put('/:id', auth, (req,res,next) => {
 
     try {
-      const { desc_salary,amt_salary } = req.body      
-      queries.update(req.params.id, desc_salary,amt_salary)
+      const { desc_exp,amt_exp } = req.body      
+      queries.update(req.params.id, desc_exp,amt_exp)
         .then(data => {
           if (data) {                
             res.json(config.rest.createResponse(200, true, data));
@@ -79,12 +85,12 @@ router.put('/:id', auth, (req,res,next) => {
         ) 
     } catch(e) {
       // statements
-      console.log(e);
+      res.status(500).json(config.rest.createResponse(500, false, undefined, "Invalid format input"))
     }
 })
 
 /* DELETE data salary */
-router.delete('/:id', (req,res,next) => {
+router.delete('/:id', auth, (req,res,next) => {
   const id = req.params.id
   queries.delete(req.params.id)
     .then(data => {

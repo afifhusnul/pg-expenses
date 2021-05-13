@@ -47,13 +47,13 @@ const user = require('./app/controllers/UsersController.js')
 const auth = require('./app/controllers/AuthController.js')
 // const profile = require('./app/controllers/ProfileController.js')
 const gaji = require('./app/controllers/SalaryController.js')
-// const expenses = require('./app/controllers/ExpensesController.js')
+const expenses = require('./app/controllers/ExpensesController.js')
 
 app.use('/api/user', user)
 app.use('/api/auth', auth)
 // app.use('/api/profile', profile)
 app.use('/api/gaji', gaji) 
-// app.use('/api/expenses', expenses) 
+app.use('/api/expenses', expenses) 
 
 
 // catch 404 and forward to error handler

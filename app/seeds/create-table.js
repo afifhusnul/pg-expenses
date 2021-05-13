@@ -35,15 +35,17 @@ CREATE TABLE salary (
 );
 
 CREATE TABLE expenses (
-	expenses_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	exp_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	user_id INT NOT NULL,
 	salary_id INT NOT NULL,
-	dtExp date NOT NULL,
-	descExp VARCHAR(250) NOT NULL DEFAULT 'Expenses XXX' ,
-	amountExp NUMERIC(10,2) NOT NULL,
+	dt_exp date NOT NULL,
+	desc_exp VARCHAR(250)  NOT NULL DEFAULT 'Expenses XXX' ,
+	amt_exp NUMERIC(10,2) NOT NULL,
 	  FOREIGN KEY(user_id) REFERENCES users(user_id),
 	  FOREIGN KEY(salary_id) REFERENCES salary(salary_id)
 );
+
+ALTER TABLE expenses ADD UNIQUE (user_id, salary_id, dt_exp, desc_exp);
 
 --insert into users(username, email, password) values ('nusnafif', 'nusnafif@digi.com.my', 'afif123');
 --select * from users;
