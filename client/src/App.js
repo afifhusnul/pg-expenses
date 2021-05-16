@@ -1,23 +1,23 @@
+import {BrowserRouter, Route} from 'react-router-dom';
+import { Container } from "react-bootstrap";
 import logo from './logo.svg';
 import './App.css';
+
+import Header from './components/pages/layout/Header';
+import Salary from './components/pages/Salary';
+import Expenses from './components/pages/Expenses';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+        <Container className="container-fluid mt-4">
+          <BrowserRouter>
+            <Route path="/salary" component={Salary}/>
+            <Route path="/expenses" component={Expenses}/>
+          </BrowserRouter>
+        </Container>      
     </div>
   );
 }
