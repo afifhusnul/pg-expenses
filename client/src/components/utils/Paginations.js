@@ -60,14 +60,14 @@ const Paginations = (props) => {
 
   const pages = fetchPageNumbers() || [];
   return (
-    <nav aria-label="Countries Pagination">
+    <nav aria-label="Pagination">
       <ul className="pagination">
         {pages.map((page, index) => {
           if (page === LEFT_PAGE)
             return (
               <li key={index} className="page-item">
                 <a
-                  href="/"
+                  href="/"                  
                   className="page-link"
                   aria-label="Previous"
                   onClick={(e) => onPageChanged(e, pageNeighbours * 2 - 1)}
@@ -80,10 +80,10 @@ const Paginations = (props) => {
 
           if (page === RIGHT_PAGE)
             return (
-              <li key={index} className="page-item">
+              <li key={index} className="page-item" >
                 <a
                   className="page-link"
-                  href="/"
+                  href="/"                  
                   aria-label="Next"
                   onClick={(e) => onPageChanged(e, pageNeighbours * 2 + 1)}
                 >
@@ -96,11 +96,11 @@ const Paginations = (props) => {
           return (
             <li
               key={index}
-              className={`page-item${currentPage === page ? " active" : ""}`}
+              className={`page-item${currentPage === page ? " active" : ""}`}              
             >
               <a
                 className="page-link"
-                href="/"
+                href="/"                
                 onClick={(e) => onPageChanged(e, page)}
               >
                 {page}
