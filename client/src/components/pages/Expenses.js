@@ -1,10 +1,10 @@
 import React,{ useState, useEffect, useCallback } from "react";
-// import { Redirect, useHistory } from "react-router-dom";
 import { Table, Card, Form, Button, Row, Col } from 'react-bootstrap';
 import * as IconBS from "react-icons/bs";
-import DatePicker from "react-datepicker";
 import Api from '../utils/Api';
-import Paginations from '../utils/Paginations';
+// import Paginations from '../utils/Paginations';
+import Paginations from '../utils/Pagination';
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const Expenses = () => {
@@ -13,23 +13,26 @@ const Expenses = () => {
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  let NUM_OF_RECORDS = data.length;
-  let LIMIT = 10;
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postsPerPage] = useState(10)
 
-  const onPageChanged = useCallback(
-    (event, page) => {
-      event.preventDefault();
-      setCurrentPage(page);
-    },
-    [setCurrentPage]
-  );
-
-  const currentData = data.slice(
-    (currentPage - 1) * LIMIT,
-    (currentPage - 1) * LIMIT + LIMIT
-  );
+//   Pagination
+//   const [currentPage, setCurrentPage] = useState(1);
+//   let NUM_OF_RECORDS = data.length;
+//   let LIMIT = 10;
+// 
+//   const onPageChanged = useCallback(
+//     (event, page) => {
+//       event.preventDefault();
+//       setCurrentPage(page);
+//     },
+//     [setCurrentPage]
+//   );
+// 
+//   const currentData = data.slice(
+//     (currentPage - 1) * LIMIT,
+//     (currentPage - 1) * LIMIT + LIMIT
+//   );
 
   // useEffect( async () => {
   //   try {
@@ -49,6 +52,12 @@ const Expenses = () => {
     }
     fetchData();
   },[]);
+
+  //Get current posts
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentData = data.slice(indexOfFirstPost, indexOfLastPost)
+  const howManyPages = Math.ceil(data.length/postsPerPage)
   
  
 // If press search
@@ -110,15 +119,16 @@ const Expenses = () => {
                 </Col>
                 <Col md="auto" ><Button size="sm" variant="outline-success" onClick={onSearch()}>Search <IconBS.BsSearch /></Button></Col>
                 <Col>
-                  <div className="pagination-wrapper">
-                    <Paginations
-                      totalRecords={NUM_OF_RECORDS}
-                      pageLimit={LIMIT}
-                      pageNeighbours={2}
-                      onPageChanged={onPageChanged}
-                      currentPage={currentPage}
-                    />
-                  </div>
+                  {/* <div className="pagination-wrapper"> */}
+                  {/*   <Paginations */}
+                  {/*     totalRecords={NUM_OF_RECORDS} */}
+                  {/*     pageLimit={LIMIT} */}
+                  {/*     pageNeighbours={2} */}
+                  {/*     onPageChanged={onPageChanged} */}
+                  {/*     currentPage={currentPage} */}
+                  {/*   /> */}
+                  {/* </div> */}
+                  <Paginations pages = {howManyPages} setCurrentPage={setCurrentPage}/>
                 </Col>  
             </Row>
           </Form>          
@@ -131,7 +141,7 @@ const Expenses = () => {
             <th>Date</th>
             <th>Description</th>
             <th>Amount</th>
-            <th>Operation</th>
+            <th>Operation</th>            
           </tr>
         </thead>
         <tbody>

@@ -14,16 +14,20 @@ require('dotenv').config();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 //BodyParser for middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//---------------- Cors --------------
-app.use(cors());
+//---------------- Cors & Cookie--------------
+app.use(cookieParser());
+app.use(cors({
+  credentials: true,
+  origin: ['http://192.168.200.100:5000', 'http://192.168.200.100:5001', 'http://192.168.200.100:5002']
+}));
+
 app.use(function(req, res, next) {
-   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Origin", "http://192.168.200.100:5001");
    res.header('Access-Control-Allow-Credentials', 'true');
    res.header('Access-Control-Allow-Methods', 'DELETE,PUT,POST,PATCH,GET');   
    res.header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, Range');
@@ -37,10 +41,10 @@ app.use(function(req, res, next) {
 
 
 // //Passport middleware
-app.use(passport.initialize())
+// app.use(passport.initialize())
 
 // //Passport Config
-require('./app/utils/Passport')(passport);
+// require('./app/utils/Passport')(passport);
 
 
 const user = require('./app/controllers/UsersController.js')

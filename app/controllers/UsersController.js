@@ -14,35 +14,78 @@ const
 
 
 /* GET users listing. */
-router.get('/', (req, res, next) => {
+router.get('/list', (req, res, next) => {
+  // try {
+  //   // statements    
+  //   queries.getAll().then(users => {
+  //       res.json(config.rest.createResponse(200, true, users));
+  //   });    
+  // } catch(e) {    
+  //   if (e) {
+  //     res.status(500).json(config.rest.createResponse(500, false, e));
+  //   } else {
+  //     next(res.status(500).json(config.rest.createResponse(500, false, e)))
+  //   }
+  // }  
+  //---- Get current user with cookie
   try {
-    // statements
-    // const users = await knex('users').select(['id_user','username','email']);
-    // const users = await knex('users').select(['*']);
-    // return res.json(config.rest.createResponse(200, true, users));
-    queries.getAll().then(users => {
-        res.json(config.rest.createResponse(200, true, users));
-    });    
-  } catch(e) {    
-    if (e) {
-      res.status(500).json(config.rest.createResponse(500, false, e));
-    } else {
-      next(res.status(500).json(config.rest.createResponse(500, false, e)))
+        const cookie = req.cookies['jwt']
+        const claims = jwt.verify(cookie, process.env.JWT_SECRET)
+
+        if (!claims) {
+            // return res.status(401).send({
+            //     message: 'unauthenticated'
+            // })
+            return res.status(401).json(config.rest.createResponse(401, false, undefined, 'UnAuthenticated')) 
+        } else {
+          
+          queries.getAll().then(users => {
+              res.json(config.rest.createResponse(200, true, users));
+          });  
+            
+        }
+    } catch (e) {        
+        res.status(401).json(config.rest.createResponse(401, false, undefined, 'UnAuthenticated'))
     }
-  }  
 });
 
 
 /* GET User Profile . */
-router.get('/:id', auth, (req, res, next) => {
-    queries.goLoginByUsername(req.params.id)
-      .then(user => {
-        if (user) {
-          res.json(config.rest.createResponse(200, true, user))
-        } else {        
-          res.status(400).json(config.rest.createResponse(400, false, undefined, 'User not found'))          
+router.get('/', (req, res, next) => {
+  try {
+        const cookie = req.cookies['jwt']
+        const claims = jwt.verify(cookie, process.env.JWT_SECRET)
+
+        if (!claims) {
+            // return res.status(401).send({
+            //     message: 'unauthenticated'
+            // })
+            return res.status(401).json(config.rest.createResponse(401, false, undefined, 'UnAuthenticated')) 
+        } else {
+          
+          // queries.getAll().then(users => {
+          //     res.json(config.rest.createResponse(200, true, users));
+          // });  
+            queries.goLoginByUsername(claims.username)
+            .then(user => {
+              if (user) {
+                res.json(config.rest.createResponse(200, true, user))
+              } else {        
+                res.status(400).json(config.rest.createResponse(400, false, undefined, 'User not found'))          
+              }
+            }) 
         }
-    })    
+    } catch (e) {        
+        res.status(401).json(config.rest.createResponse(401, false, undefined, 'UnAuthenticated'))
+    }
+    // queries.goLoginByUsername(req.params.id)
+    //   .then(user => {
+    //     if (user) {
+    //       res.json(config.rest.createResponse(200, true, user))
+    //     } else {        
+    //       res.status(400).json(config.rest.createResponse(400, false, undefined, 'User not found'))          
+    //     }
+    // })    
 })
 
 /* POST New user registration */

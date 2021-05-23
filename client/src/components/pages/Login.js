@@ -26,12 +26,12 @@ const Login = () => {
   };
 
   return (
-    <div className="text-center">
+    <div className="text-center">      
       <form className="form-signin" onSubmit={onSubmit}>
         <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
         <label htmlFor="inputEmail" className="sr-only">
           Email address
-        </label>
+        </label>        
         <input
           type="email"
           id="inputEmail"
@@ -58,6 +58,7 @@ const Login = () => {
         </p>
       </form>
     </div>
+    <div></div>
   )
 }
 

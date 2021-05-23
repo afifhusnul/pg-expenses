@@ -36,13 +36,26 @@ router.post("/login", (req, res, next) => {
                    res.status(401).json(config.rest.createResponse(401, false, undefined, "Wrong password!"))
                 } else {
                   return jwt.sign(user, process.env.JWT_SECRET, (error, token) => {                  
+                    // res.json(config.rest.createResponse(200, true, {
+                    //   // expiresIn: 60 * 30,
+                    //   // expiresIn: 60 * 60,
+                    //   exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                    //   // username: user.username,
+                    //   token: 'Bearer ' + token                  
+                    // }))
+                    // ------------Cookie
+                    res.cookie('jwt', token, {                        
+                        httpOnly: true,        
+                        maxAge: 60 * 60 // 1 day
+                    })
+
                     res.json(config.rest.createResponse(200, true, {
                       // expiresIn: 60 * 30,
                       // expiresIn: 60 * 60,
-                      exp: Math.floor(Date.now() / 1000) + (60 * 60),
-                      // username: user.username,
+                      exp: 60 * 60,
+                      username: user.username,
                       token: 'Bearer ' + token                  
-                    }))                
+                    }))
                   })                
                 }
              })
@@ -58,7 +71,13 @@ router.post("/login", (req, res, next) => {
    }
 })
 
+router.post("/logout", (req, res, next) => {
+  res.cookie('jwt', '', {maxAge: 0})
 
+    res.send({
+        message: 'Logout success'
+    })
+})
 
 router.get("/verify", (req, res, next) => {
    const token = req.headers.authorization.split(' ')[1]
